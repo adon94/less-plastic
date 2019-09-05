@@ -29,13 +29,13 @@ import rootReducer from './rootReducer';
 import './App.css';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBprNIEWqe47aJOFKd8Py57dGnZ025a2fk',
-  authDomain: 'pact-85c8b.firebaseapp.com',
-  databaseURL: 'https://pact-85c8b.firebaseio.com',
-  projectId: 'pact-85c8b',
+  apiKey: 'AIzaSyBtzSqQkdr9uCf0IWVYn4C1asjvLwLOBio',
+  authDomain: 'less-plastic.firebaseapp.com',
+  databaseURL: 'https://less-plastic.firebaseio.com',
+  projectId: 'less-plastic',
   storageBucket: '',
   messagingSenderId: '481474178991',
-  appId: '1:481474178991:web:21784bcd3262aafa',
+  appId: '1:630411517821:web:ad47f11a59f8451a1ff614',
 };
 
 const rrfConfig = {
