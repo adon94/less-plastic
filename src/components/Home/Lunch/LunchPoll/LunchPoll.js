@@ -15,10 +15,10 @@ const styles = theme => ({
     display: 'flex',
   },
   formControl: {
-    margin: theme.spacing.unit * 3,
+    margin: theme.spacing(3),
   },
   group: {
-    margin: `${theme.spacing.unit}px 0`,
+    margin: `${theme.spacing()}px 0`,
   },
   buttonContainer: {
     display: 'flex',
@@ -26,7 +26,7 @@ const styles = theme => ({
     marginTop: 30,
   },
   rightIcon: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing(),
   },
 });
 

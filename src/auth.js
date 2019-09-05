@@ -7,9 +7,7 @@ export const UserIsAuthenticated = connectedRouterRedirect({ // eslint-disable-l
   authenticatingSelector: ({ firebase: { auth, isInitializing } }) => (
     !auth.isLoaded || isInitializing === true
   ),
-  authenticatedSelector: ({ firebase: { profile, auth, auth: { isLoaded, isEmpty } } }) => (
-    auth === undefined || profile === undefined || isLoaded || !isEmpty
-  ),
+  authenticatedSelector: ({ firebase: { auth } }) => auth.isLoaded && !auth.isEmpty,
   allowRedirectBack: false,
   redirectPath: SIGN_IN,
   wrapperDisplayName: 'UserIsAuthenticated',

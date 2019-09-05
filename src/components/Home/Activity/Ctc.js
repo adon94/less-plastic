@@ -12,27 +12,27 @@ import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   paper: {
-    marginTop: theme.spacing.unit * 4,
-    marginBottom: theme.spacing.unit * 8,
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    padding: theme.spacing.unit * 2,
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(8),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    padding: theme.spacing(2),
     [theme.breakpoints.up('md')]: {
-      marginLeft: theme.spacing.unit * 8,
-      marginRight: theme.spacing.unit * 8,
+      marginLeft: theme.spacing(8),
+      marginRight: theme.spacing(8),
     },
   },
   emptyPaper: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   ctcSlot: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
   ctcContainer: {
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing(2),
   },
   titleContainer: {
     display: 'flex',

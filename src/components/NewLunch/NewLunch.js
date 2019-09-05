@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import SendIcon from '@material-ui/icons/Send';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { withFirestore, populate } from 'react-redux-firebase';
 import {
   compose,
@@ -41,16 +41,16 @@ const getNextWed = () => {
 
 const nextWed = getNextWed(); // moment().day(3).format('YYYY-MM-DD');
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
-    marginTop: theme.spacing.unit * 4,
-    marginBottom: theme.spacing.unit * 8,
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    // padding: theme.spacing.unit * 2,
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(8),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    // padding: theme.spacing(2,
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit * 8,
-      marginRight: theme.spacing.unit * 8,
+      marginLeft: theme.spacing(8),
+      marginRight: theme.spacing(8),
     },
   },
   titleContainer: {
@@ -59,26 +59,27 @@ const styles = theme => ({
     alignItems: 'center',
   },
   paper: {
-    marginTop: theme.spacing.unit * 2,
-    padding: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(2),
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    marginTop: theme.spacing.unit * 6,
+    marginTop: theme.spacing(6),
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    marginLeft: theme.spacing(),
+    marginRight: theme.spacing(),
   },
   mealItems: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
   },
-});
+}));
 
 const NewLunch = ({
-  classes, onNewSubmit, deleteMeal, addToWeek, meals, poll, removeFromPoll, launchPoll,
+  onNewSubmit, deleteMeal, addToWeek, meals, poll, removeFromPoll, launchPoll,
 }) => {
+  const classes = useStyles();
   const [description, setDescription] = React.useState('');
   const [open, setOpen] = React.useState(null);
   let pollMeals = [];
@@ -265,5 +266,4 @@ export default compose(
     meals: firestore.ordered.meals,
     poll: populate(firestore, 'polls', populates),
   })),
-  withStyles(styles),
 )(NewLunch);

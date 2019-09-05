@@ -15,13 +15,13 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 const styles = theme => ({
   root: {
-    marginTop: theme.spacing.unit * 4,
-    marginBottom: theme.spacing.unit * 8,
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(8),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit * 8,
-      marginRight: theme.spacing.unit * 8,
+      marginLeft: theme.spacing(8),
+      marginRight: theme.spacing(8),
     },
   },
   card: {

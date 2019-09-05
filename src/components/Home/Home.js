@@ -2,29 +2,33 @@ import React from 'react';
 import { compose } from 'redux';
 
 import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import withWidth from '@material-ui/core/withWidth';
 
-import Lunch from './Lunch/Lunch';
-import Ctc from './Ctc/Ctc';
+import Goals from './Goals/Goals';
+import Activity from './Activity/Activity';
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
   },
-});
+  full: {
+    width: '100%',
+  },
+}));
 
-const Home = ({ classes, width }) => {
+const Home = ({ width }) => {
+  const classes = useStyles();
   const isDesktop = width === 'md' || width === 'lg';
   return (
     <div className={classes.root}>
       <Grid container>
-        <Grid item md={7}>
-          <Lunch />
+        <Grid item md={7} className={classes.full}>
+          <Goals />
         </Grid>
         {isDesktop && (
           <Grid item md={5}>
-            <Ctc />
+            <Activity />
           </Grid>
         )}
       </Grid>
@@ -34,5 +38,4 @@ const Home = ({ classes, width }) => {
 
 export default compose(
   withWidth(),
-  withStyles(styles),
 )(Home);

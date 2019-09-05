@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 
 import withWidth from '@material-ui/core/withWidth';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -13,7 +13,7 @@ import SignOutButton from './SignOut/SignOut';
 import NavigationMobile from './NavigationMobile/NavigationMobile';
 import * as ROUTES from '../../constants/routes';
 
-const styles = {
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
   },
@@ -24,7 +24,7 @@ const styles = {
     marginLeft: -12,
     marginRight: 20,
   },
-};
+}));
 
 const NavigationAuth = () => (
   <div>
@@ -40,19 +40,22 @@ const NavigationNonAuth = () => (
   </div>
 );
 
-const NavigationDesktop = ({ authExists, classes }) => (
-  <AppBar position="static">
-    <Toolbar>
-      <Typography variant="h6" color="inherit" className={classes.grow}>
-        Wodan
-      </Typography>
-      {authExists ? <NavigationAuth /> : <NavigationNonAuth />}
-    </Toolbar>
-  </AppBar>
-);
+const NavigationDesktop = ({ authExists }) => {
+  const classes = useStyles();
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6" color="inherit" className={classes.grow}>
+          PactApp
+        </Typography>
+        {authExists ? <NavigationAuth /> : <NavigationNonAuth />}
+      </Toolbar>
+    </AppBar>
+  );
+};
 
-const Navigation = (props) => {
-  const { classes, authExists, width } = props;
+const Navigation = ({ authExists, width }) => {
+  const classes = useStyles();
   const isMobile = width === 'sm' || width === 'xs';
   return (
     <div className={classes.root}>
@@ -70,7 +73,6 @@ const enhance = connect(
 const NavigationComposed = compose(
   enhance,
   withWidth(),
-  withStyles(styles),
 )(Navigation);
 
 export default NavigationComposed;
