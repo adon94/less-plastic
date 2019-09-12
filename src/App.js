@@ -11,6 +11,8 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import { createFirestoreInstance } from 'redux-firestore';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from 'styled-components';
+import 'typeface-philosopher';
 // import { ThemeProvider } from 'styled-components';
 
 import Navigation from './components/Navigation/Navigation';
@@ -62,16 +64,30 @@ const rrfProps = {
 
 const theme = createMuiTheme({
   typography: {
-    useNextVariants: true,
+    h4: {
+      fontFamily: 'Philosopher',
+    },
+    fontFamily: [
+      // 'Philosopher',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
   },
   palette: {
     primary: {
-      main: '#27ae60',
-      contrastText: '#fff',
+      main: '#1E824C',
+      contrastText: '#ffffff',
     },
     secondary: {
-      main: '#e74c3c',
-      dark: '#c0392b',
+      main: '#B84A2A',
       contrastText: '#ffffff',
     },
   },
@@ -79,24 +95,26 @@ const theme = createMuiTheme({
 
 const App = () => (
   <MuiThemeProvider theme={theme}>
-    <Provider store={store}>
-      <ReactReduxFirebaseProvider {...rrfProps}>
-        <Router>
-          <div className="router">
-            <Navigation />
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          <Router>
+            <div className="router">
+              <Navigation />
 
-            <Route exact path={ROUTES.SIGN_IN} component={SignIn} />
-            <Route path={ROUTES.SIGN_UP} component={SignUp} />
-            <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForget} />
+              <Route exact path={ROUTES.SIGN_IN} component={SignIn} />
+              <Route path={ROUTES.SIGN_UP} component={SignUp} />
+              <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForget} />
 
-            <Route path={ROUTES.HOME} component={UserIsAuthenticated(Home)} />
-            <Route path={ROUTES.ACTIVITY} component={UserIsAuthenticated(Activity)} />
-            <Route path={ROUTES.ACCOUNT} component={UserIsAuthenticated(Account)} />
-            <Route path={ROUTES.NEW_LUNCH} component={UserIsAuthenticated(NewLunch)} />
-          </div>
-        </Router>
-      </ReactReduxFirebaseProvider>
-    </Provider>
+              <Route path={ROUTES.HOME} component={UserIsAuthenticated(Home)} />
+              <Route path={ROUTES.ACTIVITY} component={UserIsAuthenticated(Activity)} />
+              <Route path={ROUTES.ACCOUNT} component={UserIsAuthenticated(Account)} />
+              <Route path={ROUTES.NEW_LUNCH} component={UserIsAuthenticated(NewLunch)} />
+            </div>
+          </Router>
+        </ReactReduxFirebaseProvider>
+      </Provider>
+    </ThemeProvider>
   </MuiThemeProvider>
 );
 

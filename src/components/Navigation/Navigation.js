@@ -13,6 +13,8 @@ import SignOutButton from './SignOut/SignOut';
 import NavigationMobile from './NavigationMobile/NavigationMobile';
 import * as ROUTES from '../../constants/routes';
 
+import pattern from '../../assets/floral.jpg';
+
 const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
@@ -23,6 +25,11 @@ const useStyles = makeStyles(() => ({
   menuButton: {
     marginLeft: -12,
     marginRight: 20,
+  },
+  appBar: {
+    backgroundImage: `url(${pattern})`,
+    backgroundSize: '8%',
+    // textShadow: '#474747 3px 5px 2px',
   },
 }));
 
@@ -40,19 +47,16 @@ const NavigationNonAuth = () => (
   </div>
 );
 
-const NavigationDesktop = ({ authExists }) => {
-  const classes = useStyles();
-  return (
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6" color="inherit" className={classes.grow}>
-          PactApp
-        </Typography>
-        {authExists ? <NavigationAuth /> : <NavigationNonAuth />}
-      </Toolbar>
-    </AppBar>
-  );
-};
+const NavigationDesktop = ({ authExists, classes }) => (
+  <AppBar position="static" className={classes.appBar}>
+    <Toolbar>
+      <Typography variant="h4" color="inherit" className={classes.grow}>
+        Eternal Earth
+      </Typography>
+      {authExists ? <NavigationAuth /> : <NavigationNonAuth />}
+    </Toolbar>
+  </AppBar>
+);
 
 const Navigation = ({ authExists, width }) => {
   const classes = useStyles();

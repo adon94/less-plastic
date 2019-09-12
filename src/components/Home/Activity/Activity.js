@@ -5,9 +5,6 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import useScrollTrigger from '@material-ui/core/useScrollTrigger';
-import Slide from '@material-ui/core/Slide';
-import SearchBar from './SearchBar/SearchBar';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -98,26 +95,11 @@ const getWednesdays = () => {
   return dates;
 };
 
-const HideOnScroll = ({ children }) => {
-  // Note that you normally won't need to set the window ref as useScrollTrigger
-  // will default to window.
-  // This is only being set here because the demo is in an iframe.
-  const trigger = useScrollTrigger();
-  return (
-    <Slide appear={false} direction="down" in={!trigger}>
-      {children}
-    </Slide>
-  );
-};
-
 const Activity = () => {
   const occurences = getWednesdays();
   const classes = useStyles();
   return (
     <div className={classes.paper}>
-      <HideOnScroll>
-        <SearchBar />
-      </HideOnScroll>
       <Grid container>
         <Grid item xs={12}>
           <div className={classes.titleContainer}>

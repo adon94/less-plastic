@@ -1,7 +1,7 @@
 {
-  "name": "PactApp - The Social Habit App",
-  "short_name": "PactApp",
-  "theme_color": "#313131",
+  "name": "Eternal Earth",
+  "short_name": "Eternal Earth",
+  "theme_color": "#27ae60",
   "background_color": "#00adef",
   "display": "standalone",
   "orientation": "portrait",

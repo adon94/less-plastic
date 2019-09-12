@@ -10,6 +10,7 @@ import ActivityIcon from '@material-ui/icons/Public';
 import PersonPinIcon from '@material-ui/icons/AccountCircle';
 
 import { HOME, ACTIVITY, ACCOUNT } from '../../../constants/routes';
+import pattern from '../../../assets/floral.jpg';
 
 const styles = ({ palette }) => createStyles({
   tabs: {
@@ -17,10 +18,26 @@ const styles = ({ palette }) => createStyles({
     position: 'fixed',
     bottom: 0,
     width: '100%',
-    backgroundColor: palette.primary.contrastText,
-    color: palette.primary.main,
+    // backgroundColor: palette.primary.main,
+    color: palette.primary.contrastText,
+    backgroundImage: `url(${pattern})`,
+    backgroundSize: '40%',
   },
 });
+
+// const TabWrapper = styled.div`
+//   zIndex: 5,
+//   position: 'fixed',
+//   bottom: 0,
+//   width: '100%',
+//   // backgroundColor: palette.primary.main,
+//   color: ${(props) => {
+//     console.log({ props });
+//     return props.theme.palette.primary.contrastText;
+//   }},
+//   backgroundImage: url(${pattern}),
+//   backgroundSize: '40%',
+// `;
 
 class NavigationMobile extends Component {
   state = {
@@ -44,7 +61,7 @@ class NavigationMobile extends Component {
             value={currentTab}
             onChange={(event, value) => this.handleChange(value)}
             variant="fullWidth"
-            indicatorColor="primary"
+            indicatorColor="secondary"
             textColor="inherit"
           >
             <Tab icon={<FoodIcon />} />

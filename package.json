@@ -19,7 +19,8 @@
     "redux": "^4.0.1",
     "redux-auth-wrapper": "^2.1.0",
     "redux-firestore": "^0.8.0",
-    "styled-components": "^4.3.2"
+    "styled-components": "^4.3.2",
+    "typeface-philosopher": "^0.0.72"
   },
   "scripts": {
     "start": "react-scripts start",
