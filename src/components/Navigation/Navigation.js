@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose } from 'redux';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 
 import withWidth from '@material-ui/core/withWidth';
 import { makeStyles } from '@material-ui/core/styles';
@@ -58,24 +58,24 @@ const NavigationDesktop = ({ authExists, classes }) => (
   </AppBar>
 );
 
-const Navigation = ({ authExists, width }) => {
+const Navigation = ({ authExists = false, width }) => {
   const classes = useStyles();
   const isMobile = width === 'sm' || width === 'xs';
   return (
     <div className={classes.root}>
       {isMobile
-        ? <NavigationMobile classes={classes} authExists={authExists} />
+        ? <NavigationMobile authExists={authExists} />
         : <NavigationDesktop authExists={authExists} classes={classes} />}
     </div>
   );
 };
 
-const enhance = connect(
-  ({ firebase: { auth } }) => ({ authExists: !!auth && !!auth.uid }),
-);
+// const enhance = connect(
+//   ({ firebase: { auth } }) => ({ authExists: !!auth && !!auth.uid }),
+// );
 
 const NavigationComposed = compose(
-  enhance,
+  // enhance,
   withWidth(),
 )(Navigation);
 

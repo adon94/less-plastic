@@ -1,6 +1,4 @@
-import React, { Component } from 'react';
-import { compose } from 'redux';
-import { withFirebase } from 'react-redux-firebase';
+import React, { useState } from 'react';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -11,15 +9,17 @@ import InputLabel from '@material-ui/core/InputLabel';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { makeStyles } from '@material-ui/core/styles';
 
-const styles = theme => ({
+import firebase from '../../firebase';
+
+const useStyles = makeStyles(theme => ({
   main: {
     width: 'auto',
     display: 'block',
     marginLeft: theme.spacing(3),
     marginRight: theme.spacing(3),
-    [theme.breakpoints.up(400 + theme.spacing(3) * 2)]: {
+    [theme.breakpoints.up('md')]: {
       width: 400,
       marginLeft: 'auto',
       marginRight: 'auto',
@@ -43,93 +43,72 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing(3),
   },
-});
+}));
 
-const INITIAL_STATE = {
-  email: '',
-  error: null,
-};
+const PasswordForgetForm = ({ classes }) => {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState(null);
 
-class PasswordForgetFormBase extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { ...INITIAL_STATE };
-  }
-
-  onSubmit = async (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    const { email } = this.state;
-    const { firebase } = this.props;
     try {
-      await firebase.resetPassword({ email });
+      await firebase.resetPassword(email);
       // navigate to code input
-      this.setState({ ...INITIAL_STATE });
-    } catch (error) {
-      this.setState({ error });
+      setEmail('');
+    } catch (e) {
+      setError(error);
     }
   };
 
-  onChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
+  const isInvalid = email === '';
 
-  render() {
-    const { email, error } = this.state;
-    const { classes } = this.props;
+  return (
+    <form onSubmit={onSubmit}>
+      <FormControl margin="normal" required fullWidth>
+        <InputLabel htmlFor="email">Email Address</InputLabel>
+        <Input
+          id="email"
+          name="email"
+          autoComplete="email"
+          value={email}
+          onChange={({ target: { value } }) => setEmail(value)}
+          autoFocus
+        />
+      </FormControl>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        disabled={isInvalid}
+      >
+        Reset my password
+      </Button>
 
-    const isInvalid = email === '';
+      {error && <p>{error.message}</p>}
+    </form>
+  );
+};
 
-    return (
-      <form onSubmit={this.onSubmit}>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="email">Email Address</InputLabel>
-          <Input
-            id="email"
-            name="email"
-            autoComplete="email"
-            value={email}
-            onChange={this.onChange}
-            autoFocus
-          />
-        </FormControl>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-          disabled={isInvalid}
-        >
-          Reset my password
-        </Button>
-
-        {error && <p>{error.message}</p>}
-      </form>
-    );
-  }
-}
-
-const PasswordForgetPage = ({ classes }) => (
-  <main className={classes.main}>
-    <CssBaseline />
-    <Paper className={classes.paper}>
-      <Avatar className={classes.avatar}>
-        <LockOutlinedIcon />
-      </Avatar>
-      <Typography component="h1" variant="h5">
-        Password Reset
-      </Typography>
-      <PasswordForgetForm />
-    </Paper>
-  </main>
-);
-
-const PasswordForgetForm = compose(
-  withStyles(styles),
-  withFirebase,
-)(PasswordForgetFormBase);
-
-export default withStyles(styles)(PasswordForgetPage);
+const PasswordForgetPage = () => {
+  const classes = useStyles();
+  return (
+    <main className={classes.main}>
+      <CssBaseline />
+      <Paper className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Password Reset
+        </Typography>
+        <PasswordForgetForm classes={classes} />
+      </Paper>
+    </main>
+  );
+};
 
 export { PasswordForgetForm };
+
+export default PasswordForgetPage;

@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
-import { withFirebase } from 'react-redux-firebase';
+import React, { useState } from 'react';
+import { navigate } from 'hookrouter';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -12,24 +10,25 @@ import InputLabel from '@material-ui/core/InputLabel';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import * as ROUTES from '../../constants/routes';
+import firebase from '../../firebase';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   main: {
     width: 'auto',
     display: 'block', // Fix IE 11 issue.
     marginLeft: theme.spacing(3),
     marginRight: theme.spacing(3),
-    [theme.breakpoints.up(400 + theme.spacing(3) * 2)]: {
+    paddingTop: theme.spacing(8),
+    [theme.breakpoints.up('md')]: {
       width: 400,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
   },
   paper: {
-    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -46,146 +45,105 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing(3),
   },
-});
+}));
 
-const INITIAL_STATE = {
-  username: '',
-  fullname: '',
-  email: '',
-  passwordOne: '',
-  passwordTwo: '',
-  error: null,
-};
+const SignUpForm = ({ classes }) => {
+  const [displayName, setDisplayName] = useState('');
+  const [email, setEmail] = useState('');
+  const [passwordOne, setPasswordOne] = useState('');
+  const [passwordTwo, setPasswordTwo] = useState('');
+  const [error, setError] = useState(null);
 
-class SignUpFormBase extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { ...INITIAL_STATE };
-  }
-
-  onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    const { username, email, passwordOne: password } = this.state;
-    const { firebase } = this.props;
     try {
-      firebase.createUser({ email, password }, { username, email });
-      const { history } = this.props;
-      history.push(ROUTES.HOME);
-    } catch (error) {
-      this.setState({ error });
+      await firebase.register(displayName, email, passwordOne);
+      navigate(ROUTES.HOME);
+    } catch (e) {
+      setError(e);
     }
-  }
-
-  onChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
   };
 
-  render() {
-    const {
-      username,
-      fullname,
-      email,
-      passwordOne,
-      passwordTwo,
-      error,
-    } = this.state;
-    const { classes } = this.props;
+  const isInvalid = passwordOne !== passwordTwo
+  || passwordOne === ''
+  || email === ''
+  || displayName === '';
 
-    const isInvalid = passwordOne !== passwordTwo
-    || passwordOne === ''
-    || email === ''
-    || username === '';
-
-    return (
-      <form className={classes.form} onSubmit={this.onSubmit}>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="username">Username</InputLabel>
-          <Input
-            id="username"
-            name="username"
-            autoComplete="username"
-            value={username}
-            onChange={this.onChange}
-            autoFocus
-          />
-        </FormControl>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="fullname">Full name</InputLabel>
-          <Input
-            id="fullname"
-            name="fullname"
-            autoComplete="name"
-            value={fullname}
-            onChange={this.onChange}
-          />
-        </FormControl>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="email">Email address</InputLabel>
-          <Input
-            id="email"
-            name="email"
-            autoComplete="email"
-            value={email}
-            onChange={this.onChange}
-          />
-        </FormControl>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="passwordOne">Password</InputLabel>
-          <Input
-            name="passwordOne"
-            type="password"
-            id="passwordOne"
-            value={passwordOne}
-            onChange={this.onChange}
-          />
-        </FormControl>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="passwordTwo">Confirm password</InputLabel>
-          <Input
-            name="passwordTwo"
-            type="password"
-            id="passwordTwo"
-            value={passwordTwo}
-            onChange={this.onChange}
-          />
-        </FormControl>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-          disabled={isInvalid}
-        >
-          Sign up
-        </Button>
-
-        {error && <p>{error.message}</p>}
-      </form>
-    );
-  }
-}
-
-const SignUpForm = compose(
-  withRouter,
-  withFirebase,
-  withStyles(styles),
-)(SignUpFormBase);
-
-const SignUpPage = ({ classes }) => (
-  <main className={classes.main}>
-    <CssBaseline />
-    <Paper className={classes.paper}>
-      <Avatar className={classes.avatar}>
-        <LockOutlinedIcon />
-      </Avatar>
-      <Typography component="h1" variant="h5">
+  return (
+    <form className={classes.form} onSubmit={onSubmit}>
+      <FormControl margin="normal" required fullWidth>
+        <InputLabel htmlFor="displayName">Full name</InputLabel>
+        <Input
+          id="displayName"
+          name="displayName"
+          autoComplete="name"
+          value={displayName}
+          onChange={({ target: { value } }) => setDisplayName(value)}
+          autoFocus
+        />
+      </FormControl>
+      <FormControl margin="normal" required fullWidth>
+        <InputLabel htmlFor="email">Email address</InputLabel>
+        <Input
+          id="email"
+          name="email"
+          autoComplete="email"
+          value={email}
+          onChange={({ target: { value } }) => setEmail(value)}
+        />
+      </FormControl>
+      <FormControl margin="normal" required fullWidth>
+        <InputLabel htmlFor="passwordOne">Password</InputLabel>
+        <Input
+          name="passwordOne"
+          type="password"
+          id="passwordOne"
+          value={passwordOne}
+          onChange={({ target: { value } }) => setPasswordOne(value)}
+        />
+      </FormControl>
+      <FormControl margin="normal" required fullWidth>
+        <InputLabel htmlFor="passwordTwo">Confirm password</InputLabel>
+        <Input
+          name="passwordTwo"
+          type="password"
+          id="passwordTwo"
+          value={passwordTwo}
+          onChange={({ target: { value } }) => setPasswordTwo(value)}
+        />
+      </FormControl>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        disabled={isInvalid}
+      >
         Sign up
-      </Typography>
-      <SignUpForm />
-    </Paper>
-  </main>
-);
+      </Button>
 
-export default withStyles(styles)(SignUpPage);
+      {error && <p>{error.message}</p>}
+    </form>
+  );
+};
+
+const SignUpPage = () => {
+  const classes = useStyles();
+  return (
+    <main className={classes.main}>
+      <CssBaseline />
+      <Paper className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign up
+        </Typography>
+        <SignUpForm classes={classes} />
+      </Paper>
+    </main>
+  );
+};
+
+export default SignUpPage;

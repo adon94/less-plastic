@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
-import { withFirebase } from 'react-redux-firebase';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { A, navigate } from 'hookrouter';
 
+// import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,7 +12,22 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+
+import firebase from '../../firebase';
 import { HOME, PASSWORD_FORGET, SIGN_UP } from '../../constants/routes';
+
+// // Configure FirebaseUI.
+// const uiConfig = {
+//   // Popup signin flow rather than redirect flow.
+//   signInFlow: 'popup',
+//   // Redirect to /signedIn after sign in is successful.
+//   signInSuccessUrl: '/',
+//   // We will display Google and Facebook as auth providers.
+//   signInOptions: [
+//     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+//     firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+//   ],
+// };
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -22,14 +35,14 @@ const useStyles = makeStyles(theme => ({
     display: 'block',
     marginLeft: theme.spacing(3),
     marginRight: theme.spacing(3),
-    [theme.breakpoints.up(400 + theme.spacing(3) * 2)]: {
+    paddingTop: theme.spacing(8),
+    [theme.breakpoints.up('md')]: {
       width: 400,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
   },
   paper: {
-    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -51,15 +64,78 @@ const useStyles = makeStyles(theme => ({
 const SignUpLink = () => (
   <p>
     Don&apos;t have an account?&nbsp;
-    <Link to={SIGN_UP}>Sign Up</Link>
+    <A href={SIGN_UP}>Sign Up</A>
   </p>
 );
 
 const PasswordForgetLink = () => (
   <p>
-    <Link to={PASSWORD_FORGET}>Forgot Password?</Link>
+    <A href={PASSWORD_FORGET}>Forgot Password?</A>
   </p>
 );
+
+const SignInForm = ({ classes, auth = true }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!auth) {
+      navigate(HOME);
+    }
+  });
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const login = await firebase.login(email, password);
+      console.log({ login });
+      navigate(HOME);
+    } catch (e) {
+      setError(e);
+    }
+  };
+
+  const isInvalid = password === '' || email === '';
+
+  return (
+    <form className={classes.form} onSubmit={onSubmit}>
+      <FormControl margin="normal" required fullWidth>
+        <InputLabel htmlFor="email">Email Address</InputLabel>
+        <Input
+          id="email"
+          name="email"
+          autoComplete="email"
+          value={email}
+          onChange={({ target: { value } }) => setEmail(value)}
+          autoFocus
+        />
+      </FormControl>
+      <FormControl margin="normal" required fullWidth>
+        <InputLabel htmlFor="password">Password</InputLabel>
+        <Input
+          name="password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={({ target: { value } }) => setPassword(value)}
+        />
+      </FormControl>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        disabled={isInvalid}
+      >
+        Sign in
+      </Button>
+      {error && <p>{error.message}</p>}
+    </form>
+  );
+};
 
 const SignInPage = () => {
   const classes = useStyles();
@@ -76,103 +152,10 @@ const SignInPage = () => {
         <SignInForm classes={classes} />
         <PasswordForgetLink />
         <SignUpLink />
+        {/* <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} /> */}
       </Paper>
     </main>
   );
 };
-
-const INITIAL_STATE = {
-  email: '',
-  password: '',
-  error: null,
-};
-
-class SignInFormBase extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { ...INITIAL_STATE };
-  }
-
-  componentDidUpdate({ authExists: oldAuthExists }) {
-    const { authExists, history } = this.props;
-    if (authExists && !oldAuthExists) {
-      history.push(HOME);
-    }
-  }
-
-  onSubmit = async (event) => {
-    event.preventDefault();
-    const { email, password } = this.state;
-    const { firebase } = this.props;
-    try {
-      await firebase.login({
-        email,
-        password,
-      });
-    } catch (error) {
-      this.setState({ error });
-    }
-  };
-
-  onChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-
-  render() {
-    const { email, password, error } = this.state;
-    const { classes } = this.props;
-
-    const isInvalid = password === '' || email === '';
-
-    return (
-      <form className={classes.form} onSubmit={this.onSubmit}>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="email">Email Address</InputLabel>
-          <Input
-            id="email"
-            name="email"
-            autoComplete="email"
-            value={email}
-            onChange={this.onChange}
-            autoFocus
-          />
-        </FormControl>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="password">Password</InputLabel>
-          <Input
-            name="password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={this.onChange}
-          />
-        </FormControl>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-          disabled={isInvalid}
-        >
-          Sign in
-        </Button>
-        {error && <p>{error.message}</p>}
-      </form>
-    );
-  }
-}
-
-const enhance = connect(
-  ({ firebase: { auth } }) => ({ authExists: !!auth && !!auth.uid }),
-);
-
-const SignInForm = compose(
-  enhance,
-  withRouter,
-  withFirebase,
-)(SignInFormBase);
 
 export default SignInPage;

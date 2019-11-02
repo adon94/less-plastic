@@ -1,16 +1,16 @@
 import React from 'react';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { withFirebase } from 'react-redux-firebase';
+import { navigate } from 'hookrouter';
+
 import Button from '@material-ui/core/Button';
 
-import { SIGN_IN } from '../../../constants/routes';
+import { HOME } from '../../../constants/routes';
+import firebase from '../../../firebase';
 
-const SignOutButton = ({ firebase, history }) => {
+const SignOutButton = () => {
   const signOut = async (event) => {
     event.preventDefault();
     await firebase.logout();
-    history.push(SIGN_IN);
+    navigate(HOME);
   };
 
   return (
@@ -20,9 +20,4 @@ const SignOutButton = ({ firebase, history }) => {
   );
 };
 
-const SignOutButtonComposed = compose(
-  withFirebase,
-  withRouter,
-)(SignOutButton);
-
-export default SignOutButtonComposed;
+export default SignOutButton;

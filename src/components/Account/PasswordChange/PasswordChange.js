@@ -1,15 +1,13 @@
 
-import React, { Component } from 'react';
-import { compose } from 'redux';
-import { withFirebase } from 'react-redux-firebase';
+import React, { useState } from 'react';
 
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { makeStyles } from '@material-ui/core/styles';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   main: {
     width: 'auto',
     display: 'block',
@@ -39,88 +37,67 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing(3),
   },
-});
+}));
 
-const INITIAL_STATE = {
-  passwordOne: '',
-  passwordTwo: '',
-  error: null,
-};
+const PasswordChange = () => {
+  const [passwordOne, setPasswordOne] = useState('');
+  const [passwordTwo, setPasswordTwo] = useState('');
+  const [error, setError] = useState(null);
+  const classes = useStyles();
 
-class PasswordChange extends Component {
-  state = {
-    passwordOne: '',
-    passwordTwo: '',
-    error: null,
-  };
-
-  onSubmit = (event) => {
-    const { passwordOne } = this.state;
-    const { firebase } = this.props;
-
-    firebase
-      .doPasswordUpdate(passwordOne)
-      .then(() => {
-        this.setState({ ...INITIAL_STATE });
-      })
-      .catch((error) => {
-        this.setState({ error });
-      });
+  const onSubmit = (event) => {
+    // firebase
+    //   .doPasswordUpdate(passwordOne)
+    //   .then(() => {
+    //     this.setState({ ...INITIAL_STATE });
+    //   })
+    // } catch (e) {
+    //   setError(e);
+    // }
 
     event.preventDefault();
   };
 
-  onChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
+  const isInvalid = passwordOne !== passwordTwo || passwordOne === '';
 
-  render() {
-    const { classes } = this.props;
-    const { passwordOne, passwordTwo, error } = this.state;
+  return (
+    <form onSubmit={onSubmit}>
+      <FormControl margin="normal" required fullWidth>
+        <InputLabel htmlFor="password">New password</InputLabel>
+        <Input
+          name="passwordOne"
+          type="password"
+          id="passwordOne"
+          autoComplete="current-password"
+          value={passwordOne}
+          onChange={({ target: { value } }) => setPasswordOne(value)}
+        />
+      </FormControl>
+      <FormControl margin="normal" required fullWidth>
+        <InputLabel htmlFor="password">Confirm new password</InputLabel>
+        <Input
+          name="passwordTwo"
+          type="password"
+          id="passwordTwo"
+          autoComplete="current-password"
+          value={passwordOne}
+          onChange={({ target: { value } }) => setPasswordTwo(value)}
+        />
+      </FormControl>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        disabled={isInvalid}
+      >
+        Reset My Password
+      </Button>
 
-    const isInvalid = passwordOne !== passwordTwo || passwordOne === '';
+      {error && <p>{error.message}</p>}
+    </form>
+  );
+};
 
-    return (
-      <form onSubmit={this.onSubmit}>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="password">New password</InputLabel>
-          <Input
-            name="passwordOne"
-            type="password"
-            id="passwordOne"
-            autoComplete="current-password"
-            value={passwordOne}
-            onChange={this.onChange}
-          />
-        </FormControl>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="password">Confirm new password</InputLabel>
-          <Input
-            name="passwordTwo"
-            type="password"
-            id="passwordTwo"
-            autoComplete="current-password"
-            value={passwordOne}
-            onChange={this.onChange}
-          />
-        </FormControl>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-          disabled={isInvalid}
-        >
-          Reset My Password
-        </Button>
-
-        {error && <p>{error.message}</p>}
-      </form>
-    );
-  }
-}
-export default compose(
-  withFirebase,
-  withStyles(styles),
-)(PasswordChange);
+export default PasswordChange;
