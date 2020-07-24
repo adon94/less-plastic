@@ -9,7 +9,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -32,21 +31,17 @@ import { HOME, PASSWORD_FORGET, SIGN_UP } from '../../constants/routes';
 const useStyles = makeStyles(theme => ({
   main: {
     width: 'auto',
-    display: 'block',
-    marginLeft: theme.spacing(3),
-    marginRight: theme.spacing(3),
-    paddingTop: theme.spacing(8),
+    marginLeft: theme.spacing(4),
+    marginRight: theme.spacing(4),
+    paddingTop: theme.spacing(4),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     [theme.breakpoints.up('md')]: {
       width: 400,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
-  },
-  paper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
   },
   avatar: {
     margin: theme.spacing(),
@@ -88,8 +83,7 @@ const SignInForm = ({ classes, auth = true }) => {
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
-      const login = await firebase.login(email, password);
-      console.log({ login });
+      await firebase.login(email, password);
       navigate(HOME);
     } catch (e) {
       setError(e);
@@ -142,18 +136,16 @@ const SignInPage = () => {
   return (
     <main className={classes.main}>
       <CssBaseline />
-      <Paper className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <SignInForm classes={classes} />
-        <PasswordForgetLink />
-        <SignUpLink />
-        {/* <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} /> */}
-      </Paper>
+      <Avatar className={classes.avatar}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Sign in
+      </Typography>
+      <SignInForm classes={classes} />
+      <PasswordForgetLink />
+      <SignUpLink />
+      {/* <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} /> */}
     </main>
   );
 };

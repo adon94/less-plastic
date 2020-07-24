@@ -1,7 +1,7 @@
 {
-  "name": "Eternal Earth",
-  "short_name": "Eternal Earth",
-  "theme_color": "#1e824c",
+  "name": "Pact Earth",
+  "short_name": "Pact Earth",
+  "theme_color": "#c0392b",
   "background_color": "#ffffff",
   "display": "standalone",
   "orientation": "portrait",

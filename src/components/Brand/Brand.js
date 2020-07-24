@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 
-import { ScorePreview } from '../Home/BrandPost/BrandPost';
+// import { ScorePreview } from '../Home/HabitPost/HabitPost';
 import Rater from './Rater/Rater';
 import Comments from './Comments/Comments';
 import PagerMobile from '../Navigation/PagerMobile/PagerMobile';
 
 import firebase from '../../firebase';
+import HabitItem from '../Home/HabitItem/HabitItem';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -52,13 +53,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Brand = ({ id }) => {
-  const [currentBrand, setCurrentBrand] = useState(null);
+const Habit = ({ id }) => {
+  const [currentHabit, setCurrentHabit] = useState(null);
   const classes = useStyles();
   console.log({ id });
   useEffect(() => {
-    if (!currentBrand) {
-      firebase.getBrand(id).then(setCurrentBrand);
+    if (!currentHabit) {
+      firebase.getHabit(id).then(setCurrentHabit);
     }
   });
 
@@ -67,29 +68,33 @@ const Brand = ({ id }) => {
     console.log(response);
     // firestore.collection('ratings').add(rating);
   };
-  if (currentBrand) {
-    const { brand: { name, category } } = currentBrand;
-    console.log(currentBrand);
+  if (currentHabit) {
+    // const { name } = currentHabit;
+    console.log(currentHabit);
     return (
       <div>
         <PagerMobile prompt="Back" />
-        <div className={classes.withPadding}>
+        {/* <div className={classes.withPadding}>
           <Typography gutterBottom variant="h5" component="h2">
             {name}
           </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {`#${category}`}
-          </Typography>
-        </div>
-        <div className={`${classes.scoreContainer} ${classes.withPadding}`}>
+        </div> */}
+        <HabitItem item={currentHabit} isMain />
+        <Typography gutterBottom variant="subtitle1" component="h2">
+          Create a pact with someone
+        </Typography>
+        <Typography gutterBottom variant="subtitle1" component="h2">
+          All my pacts with this habit
+        </Typography>
+        {/* <div className={`${classes.scoreContainer} ${classes.withPadding}`}>
           <ScorePreview classes={classes} />
-        </div>
-        <Rater rate={rate} />
-        <Comments />
+        </div> */}
+        {/* <Rater rate={rate} />
+        <Comments /> */}
       </div>
     );
   }
   return null;
 };
 
-export default Brand;
+export default Habit;

@@ -12,7 +12,7 @@ import PersonPinIcon from '@material-ui/icons/AccountCircle';
 import {
   HOME, ACTIVITY, ACCOUNT, SIGN_IN,
 } from '../../../constants/routes';
-import pattern from '../../../assets/floral.jpg';
+import pattern from '../../../assets/lines.png';
 
 const useStyles = makeStyles(({ palette }) => ({
   tabs: {
@@ -21,8 +21,12 @@ const useStyles = makeStyles(({ palette }) => ({
     bottom: 0,
     width: '100%',
     color: palette.primary.contrastText,
+    backgroundColor: palette.primary.main,
     backgroundImage: `url(${pattern})`,
     backgroundSize: '40%',
+  },
+  tabIcon: {
+    // backgroundColor: palette.primary.light,
   },
 }));
 
@@ -55,9 +59,9 @@ const NavigationMobile = ({ currentUser }) => {
         indicatorColor="secondary"
         textColor="inherit"
       >
-        <Tab icon={<WhatshotIcon />} />
-        <Tab icon={<ActivityIcon />} />
-        <Tab icon={<PersonPinIcon />} />
+        <Tab className={classes.tabIcon} icon={<WhatshotIcon />} />
+        <Tab className={classes.tabIcon} icon={<ActivityIcon />} />
+        <Tab className={classes.tabIcon} icon={<PersonPinIcon />} />
       </Tabs>
     </div>
   );

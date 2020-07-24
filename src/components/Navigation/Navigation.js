@@ -13,7 +13,7 @@ import SignOutButton from './SignOut/SignOut';
 import NavigationMobile from './NavigationMobile/NavigationMobile';
 import * as ROUTES from '../../constants/routes';
 
-import pattern from '../../assets/floral.jpg';
+import pattern from '../../assets/lines.png';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -51,7 +51,7 @@ const NavigationDesktop = ({ authExists, classes }) => (
   <AppBar position="static" className={classes.appBar}>
     <Toolbar>
       <Typography variant="h4" color="inherit" className={classes.grow}>
-        Eternal Earth
+        Pact Earth
       </Typography>
       {authExists ? <NavigationAuth /> : <NavigationNonAuth />}
     </Toolbar>

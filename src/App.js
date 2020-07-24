@@ -34,11 +34,11 @@ const theme = createMuiTheme({
   },
   palette: {
     primary: {
-      main: '#1E824C',
+      main: '#c0392b',
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#B84A2A',
+      main: '#f1c40f',
       contrastText: '#ffffff',
     },
   },
@@ -59,7 +59,6 @@ const App = () => {
         <Provider store={store}>
           <div className="router">
             <Navigation />
-
             <Router />
           </div>
         </Provider>

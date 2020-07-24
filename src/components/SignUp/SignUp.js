@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { navigate } from 'hookrouter';
 
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import FormControl from '@material-ui/core/FormControl';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
+import {
+  Avatar,
+  InputAdornment,
+  Button,
+  FormControl,
+  Input,
+  InputLabel,
+  Typography,
+} from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import * as ROUTES from '../../constants/routes';
@@ -18,21 +19,17 @@ import firebase from '../../firebase';
 const useStyles = makeStyles(theme => ({
   main: {
     width: 'auto',
-    display: 'block', // Fix IE 11 issue.
-    marginLeft: theme.spacing(3),
-    marginRight: theme.spacing(3),
-    paddingTop: theme.spacing(8),
+    marginLeft: theme.spacing(4),
+    marginRight: theme.spacing(4),
+    paddingTop: theme.spacing(4),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     [theme.breakpoints.up('md')]: {
       width: 400,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
-  },
-  paper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
   },
   avatar: {
     margin: theme.spacing(),
@@ -48,6 +45,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignUpForm = ({ classes }) => {
+  const [username, setUsername] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [passwordOne, setPasswordOne] = useState('');
@@ -56,11 +54,21 @@ const SignUpForm = ({ classes }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    try {
-      await firebase.register(displayName, email, passwordOne);
-      navigate(ROUTES.HOME);
-    } catch (e) {
-      setError(e);
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
+    const validfirstUsername = username.match(usernameRegex);
+    if (validfirstUsername) {
+      try {
+        const response = await firebase.register(displayName, email, passwordOne, username);
+        if (response.success) {
+          navigate(ROUTES.HOME);
+        } else {
+          setError(response);
+        }
+      } catch (e) {
+        setError(e);
+      }
+    } else {
+      setError({ message: 'Invalid username' });
     }
   };
 
@@ -72,14 +80,25 @@ const SignUpForm = ({ classes }) => {
   return (
     <form className={classes.form} onSubmit={onSubmit}>
       <FormControl margin="normal" required fullWidth>
-        <InputLabel htmlFor="displayName">Full name</InputLabel>
+        <InputLabel htmlFor="displayName">Username</InputLabel>
+        <Input
+          id="username"
+          name="username"
+          autoComplete="username"
+          value={username}
+          onChange={({ target: { value } }) => setUsername(value)}
+          autoFocus
+          startAdornment={<InputAdornment position="start">@</InputAdornment>}
+        />
+      </FormControl>
+      <FormControl margin="normal" required fullWidth>
+        <InputLabel htmlFor="displayName">Display name</InputLabel>
         <Input
           id="displayName"
           name="displayName"
           autoComplete="name"
           value={displayName}
           onChange={({ target: { value } }) => setDisplayName(value)}
-          autoFocus
         />
       </FormControl>
       <FormControl margin="normal" required fullWidth>
@@ -132,16 +151,13 @@ const SignUpPage = () => {
   const classes = useStyles();
   return (
     <main className={classes.main}>
-      <CssBaseline />
-      <Paper className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
-        <SignUpForm classes={classes} />
-      </Paper>
+      <Avatar className={classes.avatar}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Sign up
+      </Typography>
+      <SignUpForm classes={classes} />
     </main>
   );
 };

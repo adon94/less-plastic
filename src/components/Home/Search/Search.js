@@ -43,19 +43,19 @@ const Search = ({ handleOpenDialog }) => {
   const classes = useStyles();
   return (
     <div className={classes.searchContainer}>
-      <Paper className={classes.root}>
+      {/* <Paper className={classes.root}>
         <InputBase
           className={classes.input}
-          placeholder="Search for a brand or category"
+          placeholder="Search for a habit or category"
           inputProps={{ 'aria-label': 'search google maps' }}
         />
         <IconButton className={classes.iconButton} aria-label="search">
           <SearchIcon />
         </IconButton>
-      </Paper>
+      </Paper> */}
       <Button onClick={handleOpenDialog} variant="outlined" fullWidth color="inherit">
         <AddIcon className={classes.rightIcon} />
-        Add a brand
+        Add a habit
       </Button>
     </div>
   );

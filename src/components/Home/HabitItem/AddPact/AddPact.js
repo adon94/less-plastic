@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
-
+import { connect } from 'react-redux';
 import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  TextField,
+  Input,
   Button,
+  InputAdornment,
+  Slide,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import 'emoji-mart/css/emoji-mart.css';
+import { Picker } from 'emoji-mart';
 
-import firebase from '../../../firebase';
+import firebase from '../../../../firebase';
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -21,57 +25,54 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginLeft: theme.spacing(),
     marginRight: theme.spacing(),
+    marginBottom: theme.spacing(2),
   },
 }));
 
-const AddBrand = ({ open, handleClose }) => {
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+
+const AddPact = ({
+  open, handleClose, habit, currentUser
+}) => {
   const classes = useStyles();
   const [name, setName] = useState('');
-  const [category, setCategory] = useState('');
-  const handleChange = ({ target: { value } }) => {
-    setName(value);
-  };
+  const [emoji, setEmoji] = useState({});
   const submit = async () => {
-    const brand = {
-      name,
-      category,
-    };
-    const response = await firebase.addBrand(brand);
+    const response = await firebase.addPact({ emoji }, habit, name, currentUser.displayName);
     if (response) {
       handleClose(true);
     } else {
       handleClose();
+      // navigate(SIGN_IN);
     }
+  };
+  const onEmojiSelect = ({ id, skin }) => {
+    setEmoji({id, skin});
   };
   return (
     <Dialog
-      fullWidth
+      fullScreen
       open={open}
       onClose={handleClose}
+      TransitionComponent={Transition}
       aria-labelledby="max-width-dialog-title"
     >
-      <DialogTitle id="max-width-dialog-title">Add a brand</DialogTitle>
+      <DialogTitle id="max-width-dialog-title">New Pact</DialogTitle>
       <DialogContent>
         <DialogContentText>
-            When you submit the details below it will be sent for review.
+          Create pact with a friend for this habit
         </DialogContentText>
         <form className={classes.form} onSubmit={submit}>
-          <TextField
+          <Input
             id="standard-multiline-flexible"
             value={name}
-            onChange={handleChange}
+            onChange={({ target: { value } }) => setName(value)}
             className={classes.textField}
             margin="normal"
-            placeholder="Brand name"
+            placeholder="Your friend's username"
+            startAdornment={<InputAdornment position="start">@</InputAdornment>}
           />
-          <TextField
-            id="standard-multiline-flexible"
-            value={category}
-            onChange={({ target: { value } }) => setCategory(value)}
-            className={classes.textField}
-            margin="normal"
-            placeholder="Category"
-          />
+          <Picker set="apple" title="Pick an emoji" onSelect={onEmojiSelect} />
         </form>
       </DialogContent>
       <DialogActions>
@@ -86,4 +87,9 @@ const AddBrand = ({ open, handleClose }) => {
   );
 };
 
-export default AddBrand;
+function mapStateToProps(state) {
+  const { auth: { currentUser } } = state;
+  return { currentUser };
+}
+
+export default connect(mapStateToProps)(AddPact);

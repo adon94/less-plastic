@@ -8,8 +8,8 @@ import { Avatar, Button, Typography } from '@material-ui/core';
 import firebase from '../../firebase';
 import { SIGN_IN } from '../../constants/routes';
 
-import profileImg from '../../assets/tropic.jpg';
-import pattern from '../../assets/floral.jpg';
+import profileImg from '../../assets/fire.jpg';
+import pattern from '../../assets/lines.png';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   profileContainer: {
@@ -30,7 +30,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
       left: 0,
       width: '100%',
       height: '100%',
-      opacity: 0.4,
+      opacity: 1,
       backgroundImage: `url(${pattern})`,
       backgroundSize: '40%',
       zIndex: -1,
@@ -44,6 +44,11 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   button: {
     margin: spacing(1),
   },
+  options: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
 }));
 
 const User = ({ currentUser }) => {
@@ -53,22 +58,33 @@ const User = ({ currentUser }) => {
     navigate(SIGN_IN);
   };
 
-  return (
-    <div>
-      <div className={classes.profileContainer}>
-        <Avatar alt={currentUser.displayName} src={profileImg} className={classes.bigAvatar} />
-        <Typography variant="h5" component="h1">
-          {currentUser.displayName}
-        </Typography>
-      </div>
+  const deleteUser = async () => {
+    await firebase.deleteUser();
+    navigate(SIGN_IN);
+  };
+
+  if (currentUser) {
+    return (
       <div>
-        {/* user options */}
-        <Button color="primary" className={classes.button} onClick={logout}>
-          Logout
-        </Button>
+        <div className={classes.profileContainer}>
+          <Avatar alt={currentUser.displayName} src={profileImg} className={classes.bigAvatar} />
+          <Typography variant="h5" component="h1">
+            {currentUser.displayName}
+          </Typography>
+        </div>
+        <div className={classes.options}>
+          {/* user options */}
+          <Button color="primary" className={classes.button} onClick={logout}>
+            Logout
+          </Button>
+          <Button color="default" className={classes.button} onClick={deleteUser}>
+            Delete my account
+          </Button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+  return null;
 };
 
 function mapStateToProps(state) {

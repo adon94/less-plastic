@@ -4,12 +4,14 @@ import {
   Grid,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { navigate } from 'hookrouter';
 
 import Search from './Search/Search';
-import BrandPost from './BrandPost/BrandPost';
-import AddBrand from './AddBrand/AddBrand';
+import HabitItem from './HabitItem/HabitItem';
+import AddHabit from './AddHabit/AddHabit';
 
 import firebase from '../../firebase';
+import { SIGN_IN } from '../../constants/routes';
 
 const useStyles = makeStyles(theme => ({
   full: {
@@ -31,15 +33,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Home = () => {
-  const [brands, setBrands] = useState([]);
+  const [habits, setHabits] = useState([]);
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
 
   useEffect(() => {
-    if (brands.length === 0) {
-      firebase.getBrands().then(setBrands);
-    }
-  });
+    firebase.getHabits().then(setHabits);
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -48,7 +48,9 @@ const Home = () => {
   const handleClose = (loadNew) => {
     setOpen(false);
     if (loadNew) {
-      firebase.getBrands().then(setBrands);
+      firebase.getHabits().then(setHabits);
+    } else {
+      navigate(SIGN_IN);
     }
   };
 
@@ -59,16 +61,16 @@ const Home = () => {
         <Grid container className={classes.feed} spacing={0}>
           {/* <Button variant="contained" color="primary">
             <AddIcon className={classes.rightIcon} />
-            Add a brand
+            Add a habit
           </Button> */}
-          {brands && brands.map(item => (
+          {habits && habits.map(item => (
             <Grid className={classes.gridItem} item key={item.id} xs={12} md={4}>
-              <BrandPost item={item} />
+              <HabitItem item={item} />
             </Grid>
           ))}
         </Grid>
       </div>
-      <AddBrand
+      <AddHabit
         open={open}
         handleClickOpen={handleClickOpen}
         handleClose={handleClose}
